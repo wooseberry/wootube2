@@ -28,7 +28,11 @@ app.use(session({
 })
 );
 
-
+app.use((req, res, next) => {
+    res.header("Cross-Origin-Embedder-Policy", "require-corp");
+    res.header("Cross-Origin-Opener-Policy", "same-origin");
+    next();
+});
 app.use(localsMiddleware);
 //폴더 노출 static에는 너가 노출 시키고 싶은 폴더의 이름을 쓰면 돼
 //이경로를 이해하지 못하니까 누군가 /uploads로 가려고 하면 uploads폴더의 내용을 보여주라는 것
