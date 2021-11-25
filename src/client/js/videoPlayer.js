@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-
+globalThis.fetch = fetch
 const video = document.querySelector("video");
 const playBtn = document.getElementById("play");
 const playBtnIcon = playBtn.querySelector("i");

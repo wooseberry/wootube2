@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
 	password: { type: String },
 	name: { type: String, required: true },
 	location: String,
+	comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }  ],
 	//videos는 Video model에 연결된 ObjectId로 구성된 array야 
 	videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],
 });

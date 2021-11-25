@@ -12,6 +12,7 @@ const videoSchema = new mongoose.Schema({
         views: { type: Number, default: 0, required: true },
         rating: { type: Number, default: 0, required: true },
     },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" }],
     //ObjectId는 js에서 제공하는게 아니라 only mongoose코드에서만 사용 할 수 있기때문에 노란색이 아니야
     //ref 는 User model의 id를 참조하겠다 라는 거야
     owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },

@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import session from "express-session";
+import flash from "express-flash";
 import MongoStore from "connect-mongo";
 
 import rootRouter from "./routers/rootRouter";
@@ -16,7 +17,10 @@ const logger = morgan("dev");
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 app.use(logger);
+//서버가 form으로 부터 오는 data를이해할수있는것도 기능중 하나
 app.use(express.urlencoded({ extended: true }));
+//string 을 받아서 json으로 바꿔주는 middleware
+app.use(express.json());
 
 //이 미들웨어가 웹사이트에 들어오는 모두를 기억 할거야
 //서버가 브라우저에게 텍스트를 줘서 개별적으로 기억
@@ -33,6 +37,7 @@ app.use((req, res, next) => {
     res.header("Cross-Origin-Opener-Policy", "same-origin");
     next();
 });
+app.use(flash());
 app.use(localsMiddleware);
 //폴더 노출 static에는 너가 노출 시키고 싶은 폴더의 이름을 쓰면 돼
 //이경로를 이해하지 못하니까 누군가 /uploads로 가려고 하면 uploads폴더의 내용을 보여주라는 것

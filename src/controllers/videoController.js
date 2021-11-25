@@ -1,4 +1,5 @@
 import Video from "../models/Video";
+import Comment from "../models/Comment";
 import User from "../models/User";
 
 export const home = async (req, res) => {
@@ -9,8 +10,9 @@ export const home = async (req, res) => {
 };
 
 export const watch = async (req, res) => {
+    //이 id를 가져올때 해당 video를 클릭하면 그 해당 아이디를 가져오는것
     const { id } = req.params;
-    const video = await Video.findById(id).populate("owner");
+    const video = await Video.findById(id).populate("owner").populate("comments");
     if (!video) {
         //populate하면 owner object의 전체가 불러와짐 즉 User의 모든것을 볼 수있음
 
@@ -29,6 +31,7 @@ export const getEdit = async (req, res) => {
         return res.status(404).render("404", { pageTitle: "Video not found." });
     }
     if (String(video.owner) !== String(_id)) {
+        req.flash("error", "Not authorized");
         return res.status(403).redirect("/");
     }
     return res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
@@ -39,24 +42,22 @@ export const postEdit = async (req, res) => {
     } = req.session;
     const { id } = req.params;
     const { title, description, hashtags } = req.body;
-    const video = await Video.exists({ _id: id });
-    //이 부분을 왜 이렇게 해야하는지
-    const videoModified = await Video.findByIdAndUpdate(id, {
+    const video = await Video.findById({ _id: id });
+    if (!video) {
+        return res.status(404).render("404", { pageTitle: "Video not found." });
+    }
+    if (String(video.owner) !== String(_id)) {
+        req.flash("error", "You are not the the owner of the video.");
+        return res.status(403).redirect("/");
+    }
+    await Video.findByIdAndUpdate(id, {
         title,
         description,
         hashtags: Video.formatHashtags(hashtags),
     });
-    if (!video) {
-        return res.status(404).render("404", { pageTitle: "Video not found." });
-    };
-    if (String(videoModified.owner) !== String(_id)) {
-        return res.status(403).redirect("/");
-    };
-
+    req.flash("success", "Change saved.");
     return res.redirect(`/videos/${id}`);
 };
-
-
 
 export const getUpload = (req, res) => {
     return res.render("upload", { pageTitle: "Upload Video" });
@@ -140,6 +141,48 @@ export const registerView = async (req, res) => {
     // 
     video.meta.views = video.meta.views + 1;
     await video.save();
+    return res.sendStatus(200);
+};
+
+export const createComment = async (req, res) => {
+    const {
+        session: { user },
+        body: { text },
+        params: { id },
+    } = req;
+
+    const video = await Video.findById(id);
+    if (!video) {
+        //sendStatus는 status를 보내고 requset를 끝내버릴거야
+        return res.sendStatus(404);
+    }
+
+    const comment = await Comment.create({
+        text,
+        owner: user._id,
+        video: id,
+    });
+    //video update
+    //왜 뒤늦게 push지?
+    video.comments.push(comment._id);
+    video.save();
+    return res.status(201).json({ newCommentId: comment._id });
+};
+
+export const deleteComment = async (req, res) => {
+    //frontend에서 fetch url로 videoId,id를 넘겨줬기 때문에 params를써야한다.
+    const { videoId, id } = req.params;
+    const comment = await Comment.findById(id);
+    const video = await Video.findById(videoId);
+    if (!comment) {
+        return res.sendStatus(404);
+    }
+    if (String(req.session.user._id) !== String(comment.owner)) {
+        return res.sendStatus(404);
+    }
+    video.comments.remove(id);
+    video.save();
+    await Comment.findByIdAndDelete(id);
     return res.sendStatus(200);
 };
 
