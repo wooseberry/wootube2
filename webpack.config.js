@@ -12,9 +12,7 @@ module.exports = {
 		recorder: BASE_JS + "recorder.js",
 		commentSection: BASE_JS + "commentSection.js",
 	},
-	mode: "development",
 	//자동 저장 리프레쉬
-	watch: true,
 	plugins: [
 		new MiniCssExtractPlugin({
 			filename: "css/styles.css"

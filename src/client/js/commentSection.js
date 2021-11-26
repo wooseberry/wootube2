@@ -9,7 +9,6 @@ const deleteBtns = document.querySelectorAll('.deleteBtn');
 
 const handleDelete = async (event) => {
 	event.preventDefault();
-	console.log("dd");
 	const targetComment = event.target.parentElement;
 	const { id } = targetComment.dataset;
 	const videoId = videoContainer.dataset.id;

@@ -4,8 +4,12 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
+        "start": "node build/init.js",
+        "build": "npm run build:sever && npm run build:assets",
+        "build:server": "babel src -d build",
+        "build:assets": "webpack --mode=production",
         "dev:server": "nodemon",
-        "dev:assets": "webpack"
+        "dev:assets": "webpack --mode=development -w"
     },
     "repository": {
         "type": "git",
@@ -21,7 +25,6 @@
     },
     "homepage": "https://github.com/wooseberry/wootube2#readme",
     "dependencies": {
-        "@babel/core": "^7.14.3",
         "@babel/node": "^7.14.2",
         "@babel/preset-env": "^7.14.2",
         "@ffmpeg/core": "^0.8.5",
@@ -42,6 +45,8 @@
         "regenerator-runtime": "^0.13.9"
     },
     "devDependencies": {
+        "@babel/cli": "^7.16.0",
+        "@babel/core": "^7.16.0",
         "babel-loader": "^8.2.2",
         "css-loader": "^5.2.7",
         "mini-css-extract-plugin": "^2.1.0",
