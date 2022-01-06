@@ -26,6 +26,7 @@
     "homepage": "https://github.com/wooseberry/wootube2#readme",
     "dependencies": {
         "@babel/node": "^7.14.2",
+        "@babel/plugin-transform-runtime": "^7.16.7",
         "@babel/preset-env": "^7.14.2",
         "@ffmpeg/core": "^0.8.5",
         "@ffmpeg/ffmpeg": "^0.9.7",
