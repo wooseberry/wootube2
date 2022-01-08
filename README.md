@@ -26,4 +26,4 @@
 
 difficult
 mongoose static 어려워
-hash는 한방향 함수다 인풋 - 아웃풋만 가능
+hash는 한방향 함수다 인풋 - 아웃풋만 가능!
